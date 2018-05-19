@@ -2,8 +2,8 @@ import { REGISTERED } from './mutation-types'
 
 export default {
   [REGISTERED] (state, payload) {
-    state.expiresIn = payload.expires_in
-    state.token = payload.access_token
+    state.expireDate = payload.expireDate
+    state.accessToken = payload.accessToken
     state.user = payload.user
   }
 }

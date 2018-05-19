@@ -25,6 +25,19 @@ const actions = actionsInjector({
 })
 
 describe(`/store/modules/auth/actions`, () => {
+  const now = new Date()
+  let clock, sandbox
+
+  beforeEach(() => {
+    sandbox = sinon.sandbox.create()
+    clock = sinon.useFakeTimers(now.getTime())
+  })
+
+  afterEach(() => {
+    sandbox.restore()
+    clock.restore()
+  })
+
   it(`register`, async () => {
     const commit = sinon.spy()
     const state = {}
@@ -37,6 +50,7 @@ describe(`/store/modules/auth/actions`, () => {
       password: '123'
     })
 
+    const date = new Date()
     expect(commit.args).to.deep.equal([
       [REGISTERED, {
         user: {
@@ -46,7 +60,7 @@ describe(`/store/modules/auth/actions`, () => {
           username: 'foobar'
         },
         accessToken: 'token',
-        expiresIn: 3600
+        expireDate: date.setSeconds(date.getSeconds() + 3600)
       }]
     ])
   })

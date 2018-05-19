@@ -1,45 +1,57 @@
 import mutations from '@/store/modules/auth/mutations'
-
-const { registered } = mutations
+import { REGISTERED } from '@/store/modules/auth/mutation-types'
 
 describe(`/store/modules/auth/mutations`, () => {
   describe(`registered`, () => {
+    const now = new Date()
+    let clock, sandbox
+
+    beforeEach(() => {
+      sandbox = sinon.sandbox.create()
+      clock = sinon.useFakeTimers(now.getTime())
+    })
+
+    afterEach(() => {
+      sandbox.restore()
+      clock.restore()
+    })
+
     it(`adds response info when it doesn't exist`, () => {
       const state = {
-        expiresIn: null,
-        token: null,
+        expireDate: null,
+        accessToken: null,
         user: null
       }
+      const expireDate = Date.now() + 3600
       const user = { name: 'foo', lastName: 'bar', username: 'foobar', email: 'foo@bar.com' }
-      const token = 'token'
-      const expiresIn = 3600
+      const accessToken = 'token'
 
-      registered(state, {
-        user, access_token: token, expires_in: expiresIn
+      mutations[REGISTERED](state, {
+        user, accessToken, expireDate
       })
 
       expect(state.user).to.equal(user)
-      expect(state.token).to.equal(token)
-      expect(state.expiresIn).to.equal(expiresIn)
+      expect(state.accessToken).to.equal(accessToken)
+      expect(state.expireDate).to.equal(expireDate)
     })
 
     it(`overwrites response info when it already exists`, () => {
       const state = {
-        expiresIn: 3600,
-        token: 'token',
+        expireDate: Date.now() + 3600,
+        accessToken: 'token',
         user: { name: 'foo', lastName: 'bar', username: 'foobar', email: 'foo@bar.com' }
       }
       const user = { name: 'antoher-foo', lastName: 'antoher-bar', username: 'antoher-foobar', email: 'antoher-foo@bar.com' }
-      const token = 'antoher-token'
-      const expiresIn = 6300
+      const accessToken = 'antoher-token'
+      const expireDate = Date.now() + 7200
 
-      registered(state, {
-        user, access_token: token, expires_in: expiresIn
+      mutations[REGISTERED](state, {
+        user, accessToken, expireDate
       })
 
       expect(state.user).to.equal(user)
-      expect(state.token).to.equal(token)
-      expect(state.expiresIn).to.equal(expiresIn)
+      expect(state.accessToken).to.equal(accessToken)
+      expect(state.expireDate).to.equal(expireDate)
     })
   })
 })

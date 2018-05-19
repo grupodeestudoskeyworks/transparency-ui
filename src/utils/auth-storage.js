@@ -4,8 +4,8 @@ export default {
   },
   get () {
     try {
-      let json = localStorage.getItem('auth')
-      return typeof json === 'string' ? JSON.parse(json) : {}
+      const json = localStorage.getItem('authInfo')
+      return json ? JSON.parse(json) : {}
     } catch (error) {
       return {}
     }
